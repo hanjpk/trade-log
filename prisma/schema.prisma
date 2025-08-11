@@ -1,0 +1,31 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Define the model for our trade log table
+model Trade {
+  id           String    @id @default(cuid())
+  cryptoName   String
+  entryDate    DateTime
+  exitDate     DateTime? // Optional field
+  entryPrice   Float
+  exitPrice    Float?    // Optional field
+  positionSize Float
+  reason       String
+  notes        String?   // Optional field
+  pnl          Float     // We'll calculate and store this
+  outcome      String    // "Profit", "Loss", or "Breakeven"
+  
+  // Clerk User ID to associate the trade with a user
+  userId       String
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
