@@ -204,23 +204,16 @@ export default function TradeDetailPage({
                                 <li className="flex items-center justify-between">
                                     <span className="text-muted-foreground flex items-center gap-2">
                                         <DollarSign className="h-4 w-4" />
-                                        Entry Price
+                                        Amount Invested
                                     </span>
                                     <span>{formatCurrency(trade.entryPrice)}</span>
                                 </li>
                                 <li className="flex items-center justify-between">
                                     <span className="text-muted-foreground flex items-center gap-2">
                                         <DollarSign className="h-4 w-4" />
-                                        Exit Price
+                                        Amount Returned
                                     </span>
                                     <span>{formatCurrency(trade.exitPrice)}</span>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                    <span className="text-muted-foreground flex items-center gap-2">
-                                        <Hash className="h-4 w-4" />
-                                        Position Size
-                                    </span>
-                                    <span>{trade.positionSize}</span>
                                 </li>
                             </ul>
                         </div>

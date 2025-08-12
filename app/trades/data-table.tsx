@@ -195,7 +195,7 @@ function TradeLogDataTable() {
         },
         {
             accessorKey: "entryPrice",
-            header: () => <div className="text-right">Entry Price</div>,
+            header: () => <div className="text-right">Amount Invested</div>,
             cell: ({ row }) => {
                 const amount = parseFloat(row.getValue("entryPrice"))
                 const formatted = new Intl.NumberFormat("en-ID", {
@@ -207,7 +207,7 @@ function TradeLogDataTable() {
         },
         {
             accessorKey: "exitPrice",
-            header: () => <div className="text-right">Exit Price</div>,
+            header: () => <div className="text-right">Amount Returned</div>,
             cell: ({ row }) => {
                 const amount = parseFloat(row.getValue("exitPrice"))
                 if (isNaN(amount)) return <div className="text-right text-muted-foreground">Open</div>

@@ -43,7 +43,7 @@ export type Trade = {
   pnl: number
   outcome: "Profit" | "Loss" | "Breakeven"
   reason: string
-  notes: string
+  notes: string | null
 }
 
 // 1. Define the Zod schema for form validation.
@@ -54,7 +54,6 @@ const formSchema = z.object({
   exitDate: z.date().optional(),
   entryPrice: z.string().min(1, "Entry price is required."),
   exitPrice: z.string().optional(),
-  positionSize: z.string().min(1, "Position size is required."),
   reason: z.string().min(1, "Reason for trade is required."),
   notes: z.string().default(""),
 })
@@ -72,7 +71,6 @@ export function TradeForm() {
     defaultValues: {
       cryptoId: "",
       entryPrice: "",
-      positionSize: "",
       reason: "",
       notes: "",
     },
@@ -85,14 +83,24 @@ export function TradeForm() {
       // Convert string values to numbers
       const entryPrice = parseFloat(values.entryPrice)
       const exitPrice = values.exitPrice ? parseFloat(values.exitPrice) : null
-      const positionSize = parseFloat(values.positionSize)
 
       // Calculate PnL and Outcome
-      const pnl =
-        exitPrice && entryPrice
-          ? (exitPrice - entryPrice) * positionSize
-          : 0
-      const outcome = pnl > 0 ? "Profit" : pnl < 0 ? "Loss" : "Breakeven"
+      let pnl = 0
+      let outcome: "Profit" | "Loss" | "Breakeven" = "Breakeven"
+      
+      if (exitPrice && entryPrice) {
+        // Simple PnL calculation: Exit Price - Entry Price
+        pnl = exitPrice - entryPrice
+        
+        // Determine outcome based on PnL
+        if (pnl > 0) {
+          outcome = "Profit"
+        } else if (pnl < 0) {
+          outcome = "Loss"
+        } else {
+          outcome = "Breakeven"
+        }
+      }
 
       // Find the selected crypto to get its name
       const selectedCrypto = cryptoOptions.find(crypto => crypto.value === values.cryptoId)
@@ -107,11 +115,11 @@ export function TradeForm() {
         exitDate: values.exitDate ? values.exitDate.toISOString() : null,
         entryPrice,
         exitPrice,
-        positionSize,
+        positionSize: 1, // Set to 1 since we're not using position size anymore
         pnl,
         outcome,
         reason: values.reason,
-        notes: values.notes,
+        notes: values.notes || null,
       }
 
       // Send the trade to the API
@@ -259,7 +267,7 @@ export function TradeForm() {
             name="entryPrice"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Entry Price (Rp)</FormLabel>
+                <FormLabel>Amount Invested (Rp)</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
@@ -268,6 +276,9 @@ export function TradeForm() {
                     value={field.value ?? ''}
                   />
                 </FormControl>
+                <FormDescription>
+                  Total amount of money you invested in this trade.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -279,7 +290,7 @@ export function TradeForm() {
             name="exitPrice"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Exit Price ($) (Optional)</FormLabel>
+                <FormLabel>Amount Returned (Rp) (Optional)</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
@@ -288,34 +299,26 @@ export function TradeForm() {
                     value={field.value ?? ''}
                   />
                 </FormControl>
+                <FormDescription>
+                  Total amount of money you got back from this trade.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
 
-        {/* Position Size */}
-        <FormField
-          control={form.control}
-          name="positionSize"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Position Size</FormLabel>
-              <FormControl>
-                <Input 
-                  type="number" 
-                  step="any" 
-                  {...field}
-                  value={field.value ?? ''}
-                />
-              </FormControl>
-              <FormDescription>
-                The quantity of the crypto you traded.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* PnL Calculation Info */}
+        <div className="rounded-lg bg-muted p-4">
+          <h4 className="font-medium mb-2">How PnL is calculated:</h4>
+          <ul className="text-sm text-muted-foreground space-y-1">
+            <li>• <strong>PnL Formula:</strong> Amount Returned - Amount Invested</li>
+            <li>• <strong>Positive PnL:</strong> Profit (you made money)</li>
+            <li>• <strong>Negative PnL:</strong> Loss (you lost money)</li>
+            <li>• <strong>Zero PnL:</strong> Breakeven (no profit, no loss)</li>
+            <li>• If no exit amount is provided, PnL will be 0 and outcome will be "Breakeven"</li>
+          </ul>
+        </div>
 
         {/* Reason for Trade */}
         <FormField
