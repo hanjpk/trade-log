@@ -16,6 +16,7 @@ import './globals.css'
 import { ModeToggle } from "@/components/mode-button"
 import { TrendingUp } from "lucide-react"
 import { Toaster } from "sonner"
+import { Button } from "@/components/ui/button"
 
 const inter = Inter({
   subsets: ['latin'],
@@ -58,7 +59,16 @@ export default async function RootLayout({
               {/* User section on the right */}
               <div className="flex items-center gap-4">
                 <SignedOut>
-                  <SignInButton />
+                  <SignInButton>
+                    <Button variant="outline">
+                      Login
+                    </Button>
+                  </SignInButton>
+                  <SignUpButton>
+                    <Button>
+                      Register
+                    </Button>
+                  </SignUpButton>
                 </SignedOut>
                 <SignedIn>
                   {/* 3. Render the user's name and UserButton */}
@@ -70,6 +80,7 @@ export default async function RootLayout({
                   <UserButton />
                   <ModeToggle />
                 </SignedIn>
+
               </div>
             </header>
             <SignedIn>
