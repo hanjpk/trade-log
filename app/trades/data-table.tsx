@@ -211,9 +211,9 @@ function TradeLogDataTable() {
             cell: ({ row }) => {
                 const amount = parseFloat(row.getValue("exitPrice"))
                 if (isNaN(amount)) return <div className="text-right text-muted-foreground">Open</div>
-                const formatted = new Intl.NumberFormat("en-US", {
+                const formatted = new Intl.NumberFormat("en-ID", {
                     style: "currency",
-                    currency: "USD",
+                    currency: "IDR",
                 }).format(amount)
                 return <div className="text-right font-medium">{formatted}</div>
             },
