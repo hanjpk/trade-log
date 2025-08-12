@@ -257,6 +257,28 @@ export default function TradeDetailPage({
                             </dl>
                         </div>
                     </div>
+                    <Separator className="my-6" />
+
+                    {/* User Information */}
+                    <div className="grid gap-3">
+                        <div className="font-semibold">Trade Information</div>
+                        <ul className="grid gap-3">
+                            <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">Created By</span>
+                                <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                                    {trade.userId}
+                                </span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">Created At</span>
+                                <span>{formatDate(trade.createdAt)}</span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">Last Updated</span>
+                                <span>{formatDate(trade.updatedAt)}</span>
+                            </li>
+                        </ul>
+                    </div>
                 </CardContent>
             </Card>
         </main>

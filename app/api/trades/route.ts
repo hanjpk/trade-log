@@ -14,9 +14,6 @@ export async function GET(request: NextRequest) {
     }
 
     const trades = await prisma.trade.findMany({
-      where: {
-        userId: user.id,
-      },
       orderBy: {
         createdAt: 'desc',
       },

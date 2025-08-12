@@ -245,6 +245,20 @@ function TradeLogDataTable() {
             },
         },
         {
+            accessorKey: "userId",
+            header: "Created By",
+            cell: ({ row }) => {
+                const userId = row.getValue("userId") as string
+                // Display a shortened version of the user ID for privacy
+                const displayName = userId.substring(0, 8) + "..."
+                return (
+                    <div className="text-sm text-muted-foreground">
+                        {displayName}
+                    </div>
+                )
+            },
+        },
+        {
             id: "actions",
             cell: ({ row }) => {
                 const trade = row.original
