@@ -1,33 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { currentUser } from '@clerk/nextjs/server'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// Explicitly define the type for the second argument's shape
+type RouteContext = {
+  params: Promise<{
+    id: string
+  }>
+}
+
+export async function GET(request: NextRequest, { params }: RouteContext) {
   try {
-    const user = await currentUser()
-    
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
+    const { id } = await params
     const trade = await prisma.trade.findFirst({
       where: {
-        id: params.id,
-        userId: user.id, // Ensure user can only access their own trades
+        id: id,
       },
     })
 
     if (!trade) {
-      return NextResponse.json(
-        { error: 'Trade not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Trade not found' }, { status: 404 })
     }
 
     return NextResponse.json(trade)
